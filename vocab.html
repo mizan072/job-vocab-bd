@@ -1,36 +1,166 @@
-// On vocab.html load
-window.addEventListener('DOMContentLoaded', async () => {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vocab Bank - JobVocab BD</title>
     
-    // Show Loading Spinner
-    document.getElementById('loader').style.display = 'block';
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 pb-24">
 
-    // Fetch and Merge Data
-    const fullBank = await loadVocabBank();
-
-    // Hide Loader
-    document.getElementById('loader').style.display = 'none';
-
-    // Render the giant list
-    renderVocabTable(fullBank); 
-});
-
-function renderVocabTable(questions) {
-    const container = document.getElementById('vocabContainer');
-    let html = '';
-
-    questions.forEach(q => {
-        html += `
-        <div class="vocab-card bg-white p-4 mb-3 rounded-lg shadow-sm border border-gray-100">
-            <div class="flex justify-between">
-                <h3 class="font-bold text-lg text-blue-700">${q.word}</h3>
-                <span class="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded">
-                    ${q.source_exam}
-                </span>
+    <header class="bg-white sticky top-0 z-20 shadow-sm border-b border-gray-100">
+        <div class="max-w-md mx-auto px-5 py-4">
+            <div class="flex items-center gap-3 mb-4">
+                <a href="index.html" class="p-2 -ml-2 rounded-full hover:bg-slate-50 text-slate-500">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </a>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-900">Vocab Bank</h1>
+                    <p class="text-[11px] font-medium text-slate-400 uppercase">All Words • One Place</p>
+                </div>
             </div>
-            <p class="text-gray-600 font-bengali mt-1">${q.meaning_bn}</p>
-        </div>
-        `;
-    });
 
-    container.innerHTML = html;
-}
+            <div class="relative">
+                <input type="text" id="vocabSearch" placeholder="Search word or meaning..." 
+                    class="w-full bg-slate-100 border-none rounded-2xl py-3 px-11 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all placeholder-slate-400">
+                <svg class="w-5 h-5 text-slate-400 absolute left-4 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto px-5 mt-4">
+        
+        <div id="loader" class="py-10 text-center">
+            <div class="inline-block w-8 h-8 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin mb-2"></div>
+            <p class="text-xs text-slate-400 font-medium">Loading Database...</p>
+        </div>
+
+        <div id="statsBar" class="hidden flex justify-between items-center mb-4 px-1">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Words</span>
+            <span id="totalCount" class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">0</span>
+        </div>
+
+        <div id="vocabContainer" class="flex flex-col gap-3">
+            </div>
+
+    </main>
+
+    <nav class="fixed bottom-0 w-full bg-white/95 backdrop-blur-md border-t border-slate-100 pb-safe z-30">
+        <div class="max-w-md mx-auto flex justify-around items-center h-16">
+            <a href="index.html" class="flex flex-col items-center justify-center w-full h-full text-slate-400 hover:text-slate-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <span class="text-[10px] font-semibold mt-1">Home</span>
+            </a>
+            <a href="vocab.html" class="flex flex-col items-center justify-center w-full h-full text-blue-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                <span class="text-[10px] font-semibold mt-1">Vocab</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        // --- 1. CONFIGURATION ---
+        const INDEX_URL = 'data/exam_index.json';
+        const container = document.getElementById('vocabContainer');
+        const loader = document.getElementById('loader');
+        const searchInput = document.getElementById('vocabSearch');
+        const statsBar = document.getElementById('statsBar');
+        const totalCount = document.getElementById('totalCount');
+        
+        let allVocabCache = []; // Stores the merged list
+
+        // --- 2. FETCH & MERGE LOGIC ---
+        async function loadVocabBank() {
+            try {
+                // A. Get List of Files
+                const indexRes = await fetch(INDEX_URL);
+                const filePaths = await indexRes.json();
+
+                // B. Fetch All Files in Parallel
+                const promises = filePaths.map(path => fetch(path).then(res => res.json()));
+                const allExams = await Promise.all(promises);
+
+                // C. Merge Questions into One Giant List
+                let mergedList = [];
+                
+                allExams.forEach(exam => {
+                    // We add the "Exam Name" to every question so we know where it came from
+                    const examTitle = exam.info.title;
+                    const taggedQuestions = exam.questions.map(q => ({
+                        ...q,
+                        source_exam: examTitle 
+                    }));
+                    mergedList = [...mergedList, ...taggedQuestions];
+                });
+
+                return mergedList;
+
+            } catch (error) {
+                console.error("Error loading vocab bank:", error);
+                container.innerHTML = `<p class="text-red-500 text-center text-sm">Error loading data. Check console.</p>`;
+                return [];
+            }
+        }
+
+        // --- 3. RENDER UI ---
+        function renderList(questions) {
+            container.innerHTML = '';
+            
+            if(questions.length === 0) {
+                container.innerHTML = `<div class="text-center py-10 text-slate-400">No words found.</div>`;
+                return;
+            }
+
+            questions.forEach(q => {
+                const html = `
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-1">
+                        <h3 class="text-lg font-bold text-blue-700">${q.word}</h3>
+                        <span class="text-[10px] font-medium text-slate-400 bg-slate-50 px-2 py-1 rounded border border-slate-100 max-w-[40%] truncate">
+                            ${q.source_exam}
+                        </span>
+                    </div>
+                    <p class="text-slate-700 font-medium bn-font text-base mb-2">${q.meaning_bn}</p>
+                    <div class="text-xs text-slate-400 border-t border-slate-50 pt-2 flex gap-2">
+                        <span>Answer: <span class="font-semibold text-slate-600">${q.correct}</span></span>
+                    </div>
+                </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        // --- 4. INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Show Loader
+            loader.style.display = 'block';
+            statsBar.classList.add('hidden');
+
+            // Load Data
+            allVocabCache = await loadVocabBank();
+
+            // Hide Loader
+            loader.style.display = 'none';
+            statsBar.classList.remove('hidden');
+            totalCount.innerText = allVocabCache.length;
+
+            // Show Data
+            renderList(allVocabCache);
+        });
+
+        // --- 5. SEARCH FEATURE ---
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = allVocabCache.filter(q => 
+                q.word.toLowerCase().includes(term) || 
+                q.meaning_bn.includes(term)
+            );
+            renderList(filtered);
+            totalCount.innerText = filtered.length;
+        });
+
+    </script>
+</body>
+</html>
