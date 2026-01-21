@@ -1,24 +1,29 @@
 {
-  "exam_info": {
+  "info": {
+    "id": "bcs_46",
     "title": "46th BCS Preliminary",
-    "date": "2024-04-26"
+    "date": "2024-04-26",
+    "category": "BCS",
+    "total_questions": 15
   },
   "questions": [
     {
       "id": 1,
-      "word": "Benevolent",
-      "meaning_bn": "হিতৈষী / দয়ালু",
-      "options": ["Cruel", "Kind", "Angry", "Lazy"],
-      "correct_answer": "Kind",
-      "explanation": "Benevolent means well meaning and kindly."
+      "word": "Ephemeral",
+      "meaning_bn": "ক্ষণস্থায়ী",
+      "question": "What is the synonym of 'Ephemeral'?",
+      "options": ["Transient", "Permanent", "Long", "Eternal"],
+      "correct": "Transient",
+      "explanation": "Ephemeral means lasting for a very short time."
     },
     {
       "id": 2,
-      "word": "Obscure",
-      "meaning_bn": "অস্পষ্ট",
-      "options": ["Clear", "Vague", "Bright", "Famous"],
-      "correct_answer": "Vague",
-      "explanation": "Obscure means not discovered or known about; uncertain."
+      "word": "Altruistic",
+      "meaning_bn": "পরোপকারী",
+      "question": "The word 'Altruistic' is related to:",
+      "options": ["Selfishness", "Charity", "Anger", "War"],
+      "correct": "Charity",
+      "explanation": "Altruistic shows a disinterested and selfless concern for others."
     }
   ]
 }
