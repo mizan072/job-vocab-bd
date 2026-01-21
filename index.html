@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobVocab BD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F3F4F6; }
+        .font-bengali { font-family: 'Hind Siliguri', sans-serif; }
+        
+        /* Premium Skeleton Shimmer Animation */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        .skeleton {
+            animation: shimmer 2s infinite linear;
+            background: linear-gradient(to right, #e5e7eb 4%, #f3f4f6 25%, #e5e7eb 36%);
+            background-size: 1000px 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-800 pb-20">
+
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-md mx-auto px-4 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold text-slate-900">JobVocab<span class="text-blue-600">BD</span></h1>
+                <p class="text-xs text-slate-500">Master Exam English</p>
+            </div>
+            <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">
+                JD
+            </div>
+        </div>
+        
+        <div class="max-w-md mx-auto px-4 pb-4">
+            <div class="relative">
+                <input type="text" id="searchInput" placeholder="Search exams..." 
+                    class="w-full bg-slate-100 border-none rounded-xl py-3 px-10 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            
+            <div class="flex gap-2 mt-3 overflow-x-auto no-scrollbar pb-1">
+                <button onclick="filterExams('all')" class="px-4 py-1.5 bg-blue-600 text-white rounded-full text-xs font-medium whitespace-nowrap shadow-md shadow-blue-200">All</button>
+                <button onclick="filterExams('Bank')" class="px-4 py-1.5 bg-white text-slate-600 border border-slate-200 rounded-full text-xs font-medium whitespace-nowrap">Bank Jobs</button>
+                <button onclick="filterExams('BCS')" class="px-4 py-1.5 bg-white text-slate-600 border border-slate-200 rounded-full text-xs font-medium whitespace-nowrap">BCS</button>
+                <button onclick="filterExams('Govt')" class="px-4 py-1.5 bg-white text-slate-600 border border-slate-200 rounded-full text-xs font-medium whitespace-nowrap">Govt. Jobs</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto px-4 mt-4">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="font-bold text-slate-800">Recent Exams</h2>
+            <span class="text-xs text-blue-600 font-medium">See All</span>
+        </div>
+
+        <div id="examContainer" class="grid grid-cols-1 gap-4">
+            </div>
+    </main>
+
+    <nav class="fixed bottom-0 w-full bg-white border-t border-gray-100 pb-safe">
+        <div class="max-w-md mx-auto flex justify-around py-3">
+            <button class="flex flex-col items-center text-blue-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <span class="text-[10px] font-medium mt-1">Home</span>
+            </button>
+            <button class="flex flex-col items-center text-slate-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <span class="text-[10px] font-medium mt-1">Practice</span>
+            </button>
+            <button class="flex flex-col items-center text-slate-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                <span class="text-[10px] font-medium mt-1">Profile</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        const container = document.getElementById('examContainer');
+        const searchInput = document.getElementById('searchInput');
+        let allExams = [];
+
+        // 1. Render Skeletons (Loading State)
+        function renderSkeletons() {
+            let html = '';
+            for(let i=0; i<3; i++) {
+                html += `
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="w-10 h-10 bg-gray-200 rounded-full skeleton"></div>
+                        <div class="w-16 h-5 bg-gray-200 rounded-full skeleton"></div>
+                    </div>
+                    <div class="h-5 w-3/4 bg-gray-200 rounded mb-2 skeleton"></div>
+                    <div class="h-4 w-1/2 bg-gray-200 rounded mb-4 skeleton"></div>
+                    <div class="h-10 w-full bg-gray-200 rounded-xl skeleton"></div>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        // 2. Render Actual Cards
+        function renderCards(exams) {
+            container.innerHTML = ''; // Clear skeletons
+            
+            if(exams.length === 0) {
+                container.innerHTML = `<div class="text-center py-10 text-slate-400">No exams found.</div>`;
+                return;
+            }
+
+            exams.forEach(exam => {
+                const card = `
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow relative overflow-hidden group">
+                    ${exam.is_new ? '<span class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg">NEW</span>' : ''}
+                    
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-full ${getIconColor(exam.category)} flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">${exam.category}</p>
+                            <h3 class="font-bold text-slate-800 text-sm leading-tight">${exam.title}</h3>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4 text-xs text-slate-500 mb-4 font-medium">
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            ${exam.date}
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            ${exam.questions} Vocabs
+                        </span>
+                    </div>
+
+                    <button onclick="startExam('${exam.file}', '${exam.title}')" class="w-full py-2.5 rounded-xl bg-slate-50 text-blue-600 font-semibold text-sm hover:bg-blue-600 hover:text-white transition-colors border border-blue-100">
+                        Start Practice
+                    </button>
+                </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        // Helper: Dynamic colors based on category
+        function getIconColor(category) {
+            if(category === 'Bank') return 'bg-emerald-500';
+            if(category === 'BCS') return 'bg-purple-500';
+            return 'bg-blue-500';
+        }
+
+        // 3. Fetch Data Logic
+        async function init() {
+            renderSkeletons(); // Show loading state
+            
+            // SIMULATED NETWORK DELAY (Remove setTimeout in production)
+            setTimeout(async () => {
+                try {
+                    // In real app: await fetch('data/exam_list.json')
+                    // For this demo, I'm using the static data array above
+                    const response = await fetch('data/exam_list.json'); 
+                    allExams = await response.json();
+                    renderCards(allExams);
+                } catch (error) {
+                    console.error("Error:", error);
+                    container.innerHTML = `<p class="text-red-500 text-center">Failed to load data. Check JSON path.</p>`;
+                }
+            }, 800); 
+        }
+
+        // 4. Search Filter
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = allExams.filter(exam => exam.title.toLowerCase().includes(term));
+            renderCards(filtered);
+        });
+
+        // 5. Category Filter
+        window.filterExams = (cat) => {
+            if(cat === 'all') {
+                renderCards(allExams);
+            } else {
+                const filtered = allExams.filter(exam => exam.category === cat);
+                renderCards(filtered);
+            }
+        };
+
+        // 6. Navigation Logic
+        window.startExam = (file, title) => {
+            // Save selection to LocalStorage so the next page knows what to load
+            localStorage.setItem('currentExamFile', file);
+            localStorage.setItem('currentExamTitle', title);
+            window.location.href = 'practice.html';
+        };
+
+        // Start the app
+        init();
+    </script>
+</body>
+</html>
