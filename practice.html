@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Practice - JobVocab BD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body class="bg-gray-50 flex flex-col h-screen overflow-hidden">
+
+    <header class="bg-white px-5 py-4 border-b border-gray-100 flex justify-between items-center z-10 shadow-sm h-16">
+        <a href="index.html" class="p-2 -ml-2 text-slate-400 hover:text-red-500 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </a>
+
+        <div class="flex-1 mx-6">
+            <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div id="progressBar" class="h-full bg-blue-600 transition-all duration-300" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-1 text-slate-700 font-bold">
+            <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span id="scoreDisplay">0</span>
+        </div>
+    </header>
+
+    <main id="gameContainer" class="flex-1 overflow-y-auto p-5 relative">
+        
+        <div id="loader" class="absolute inset-0 flex items-center justify-center bg-gray-50 z-20">
+            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+        </div>
+
+        <div id="questionArea" class="hidden h-full flex flex-col justify-center max-w-md mx-auto">
+            
+            <div class="mb-8 text-center">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">Question <span id="currentQNum">1</span></span>
+                <h1 id="questionWord" class="text-3xl font-extrabold text-slate-800 mb-2">Word</h1>
+                <p id="questionText" class="text-slate-500 font-medium">What is the synonym?</p>
+            </div>
+
+            <div id="optionsContainer" class="flex flex-col gap-3">
+                </div>
+
+            <div id="explanationBox" class="hidden mt-6 p-4 bg-blue-50 border border-blue-100 rounded-xl animate-fade-in">
+                <p class="text-xs font-bold text-blue-600 uppercase mb-1">Explanation</p>
+                <p id="explanationText" class="text-sm text-slate-700 bn-font leading-relaxed">Meaning goes here...</p>
+            </div>
+
+        </div>
+
+        <div id="resultScreen" class="hidden h-full flex flex-col items-center justify-center text-center max-w-md mx-auto">
+            <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-6">
+                <svg class="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800 mb-2">Exam Completed!</h2>
+            <p class="text-slate-500 mb-8">You scored <span id="finalScore" class="font-bold text-slate-900">0</span></p>
+            
+            <button onclick="window.location.reload()" class="w-full py-3 rounded-xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-200 active:scale-95 transition-transform mb-3">
+                Try Again
+            </button>
+            <a href="index.html" class="w-full py-3 rounded-xl text-slate-500 font-medium hover:bg-slate-100 block">
+                Back to Home
+            </a>
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-gray-100 p-5 pb-safe z-10">
+        <div class="max-w-md mx-auto">
+            <button id="nextBtn" onclick="nextQuestion()" disabled 
+                class="w-full py-3.5 rounded-xl bg-slate-200 text-slate-400 font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed enabled:bg-blue-600 enabled:text-white enabled:shadow-lg enabled:shadow-blue-200 enabled:active:scale-95">
+                Next Question
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. STATE MANAGEMENT ---
+        let questions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let isAnswered = false;
+
+        // Elements
+        const ui = {
+            loader: document.getElementById('loader'),
+            gameArea: document.getElementById('questionArea'),
+            resultScreen: document.getElementById('resultScreen'),
+            word: document.getElementById('questionWord'),
+            text: document.getElementById('questionText'),
+            options: document.getElementById('optionsContainer'),
+            progress: document.getElementById('progressBar'),
+            qNum: document.getElementById('currentQNum'),
+            score: document.getElementById('scoreDisplay'),
+            nextBtn: document.getElementById('nextBtn'),
+            explanationBox: document.getElementById('explanationBox'),
+            explanationText: document.getElementById('explanationText')
+        };
+
+        // --- 2. INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', async () => {
+            const filePath = localStorage.getItem('currentExamPath');
+            
+            if (!filePath) {
+                alert("No exam selected!");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            try {
+                // Fetch the specific exam JSON
+                const response = await fetch(filePath);
+                if (!response.ok) throw new Error("File not found");
+                
+                const data = await response.json();
+                questions = data.questions; // Assuming JSON structure: { info: {}, questions: [] }
+                
+                // Start Game
+                ui.loader.style.display = 'none';
+                ui.gameArea.classList.remove('hidden');
+                loadQuestion();
+
+            } catch (error) {
+                console.error(error);
+                alert("Error loading exam data. Please check if the JSON file exists.");
+                window.location.href = 'index.html';
+            }
+        });
+
+        // --- 3. RENDER QUESTION ---
+        function loadQuestion() {
+            // Reset UI
+            isAnswered = false;
+            ui.nextBtn.disabled = true;
+            ui.explanationBox.classList.add('hidden');
+            ui.options.innerHTML = '';
+            
+            const q = questions[currentIndex];
+
+            // Update Text
+            ui.word.innerText = q.word;
+            ui.text.innerText = q.question || `What is the correct meaning?`; // Fallback text
+            ui.qNum.innerText = `${currentIndex + 1} / ${questions.length}`;
+            
+            // Update Progress Bar
+            const progressPercent = ((currentIndex) / questions.length) * 100;
+            ui.progress.style.width = `${progressPercent}%`;
+
+            // Render Options
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = `w-full p-4 rounded-xl border-2 border-slate-100 bg-white text-slate-700 font-medium text-left transition-all active:scale-98 hover:border-blue-200`;
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(btn, opt, q.correct, q.explanation);
+                ui.options.appendChild(btn);
+            });
+        }
+
+        // --- 4. CHECK ANSWER LOGIC (RED/GREEN) ---
+        function checkAnswer(selectedBtn, selectedValue, correctValue, explanation) {
+            if (isAnswered) return; // Prevent multiple clicks
+            isAnswered = true;
+
+            const allBtns = ui.options.children;
+
+            if (selectedValue === correctValue) {
+                // CORRECT
+                selectedBtn.className = "w-full p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-700 font-bold text-left";
+                score++;
+                ui.score.innerText = score;
+                triggerConfetti(); // Fun animation
+            } else {
+                // WRONG
+                selectedBtn.className = "w-full p-4 rounded-xl border-2 border-red-500 bg-red-50 text-red-700 font-bold text-left";
+                
+                // Highlight the correct one automatically
+                for (let btn of allBtns) {
+                    if (btn.innerText === correctValue) {
+                        btn.className = "w-full p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-700 font-bold text-left shadow-lg";
+                    }
+                }
+            }
+
+            // Show Explanation
+            if(explanation) {
+                ui.explanationBox.classList.remove('hidden');
+                ui.explanationText.innerText = explanation;
+            }
+
+            // Enable Next Button
+            ui.nextBtn.disabled = false;
+        }
+
+        // --- 5. NEXT QUESTION ---
+        window.nextQuestion = () => {
+            if (currentIndex < questions.length - 1) {
+                currentIndex++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        };
+
+        // --- 6. RESULTS ---
+        function showResults() {
+            ui.gameArea.classList.add('hidden');
+            document.querySelector('footer').classList.add('hidden'); // Hide next button
+            ui.resultScreen.classList.remove('hidden');
+            
+            document.getElementById('finalScore').innerText = `${score} / ${questions.length}`;
+            ui.progress.style.width = '100%';
+        }
+
+        // --- 7. UTILS ---
+        function triggerConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#2563EB', '#10B981'] // Blue & Green
+            });
+        }
+    </script>
+</body>
+</html>
