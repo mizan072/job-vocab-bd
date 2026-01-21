@@ -6,152 +6,127 @@
     <title>JobVocab BD</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="pb-24"> <header class="bg-white sticky top-0 z-20 shadow-sm">
-        <div class="max-w-md mx-auto px-5 py-4 flex justify-between items-center">
-            <div>
-                <h1 class="text-xl font-bold text-slate-900 tracking-tight">
-                    JobVocab<span class="text-blue-600">BD</span>
-                </h1>
-                <p class="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Exam Preparation</p>
+<body class="bg-gray-50 pb-24">
+
+    <header class="bg-white sticky top-0 z-20 shadow-sm border-b border-gray-100">
+        <div class="max-w-md mx-auto px-5 py-4">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900 tracking-tight">
+                        JobVocab<span class="text-blue-600">BD</span>
+                    </h1>
+                    <p class="text-[11px] font-medium text-slate-400 uppercase tracking-wide">Premium Exam Prep</p>
+                </div>
+                <div class="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs border border-blue-100">
+                    JD
+                </div>
             </div>
-            <button class="w-9 h-9 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-            </button>
-        </div>
-        
-        <div class="max-w-md mx-auto px-5 pb-4">
-            <div class="relative group">
-                <input type="text" id="searchInput" placeholder="Search exams (e.g. BCS, Bank)..." 
-                    class="w-full bg-slate-100 text-slate-700 border-none rounded-2xl py-3.5 px-11 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all placeholder-slate-400">
-                <svg class="w-5 h-5 text-slate-400 absolute left-4 top-3.5 group-focus-within:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+
+            <div class="relative">
+                <input type="text" id="searchInput" placeholder="Search exams..." 
+                    class="w-full bg-slate-100 border-none rounded-2xl py-3 px-11 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all placeholder-slate-400">
+                <svg class="w-5 h-5 text-slate-400 absolute left-4 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             </div>
         </div>
     </header>
 
     <main class="max-w-md mx-auto px-5 mt-6">
         
-        <div class="mb-8">
-            <a href="vocab.html" class="block w-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-5 text-white shadow-lg shadow-blue-200 active:scale-95 transition-transform">
-                <div class="flex justify-between items-center">
+        <div onclick="startVocabBankSession()" class="mb-8 cursor-pointer transform active:scale-95 transition-transform">
+            <div class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-5 text-white shadow-lg shadow-blue-200 relative overflow-hidden">
+                <div class="absolute -right-6 -top-6 w-24 h-24 bg-white/10 rounded-full"></div>
+                
+                <div class="flex justify-between items-center relative z-10">
                     <div>
                         <h2 class="text-lg font-bold">Full Vocab Bank</h2>
-                        <p class="text-blue-100 text-xs mt-1">Practice words from all exams mixed together.</p>
+                        <p class="text-blue-100 text-xs mt-1 font-medium">Practice mixed questions from all exams.</p>
                     </div>
-                    <div class="bg-white/20 p-2 rounded-lg">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                    </div>
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                 </div>
-            </a>
+            </div>
         </div>
 
         <div class="flex justify-between items-end mb-4">
-            <h3 class="text-lg font-bold text-slate-800">Recent Exams</h3>
-            <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded-md">Live Updated</span>
+            <h3 class="text-lg font-bold text-slate-800">Available Exams</h3>
+            <span id="countBadge" class="text-xs font-semibold text-slate-500 bg-slate-200 px-2 py-1 rounded-md">Loading...</span>
         </div>
 
-        <div id="examContainer" class="flex flex-col gap-4">
+        <div id="examContainer" class="flex flex-col gap-3">
             </div>
 
     </main>
 
-    <nav class="fixed bottom-0 w-full bg-white/90 backdrop-blur-md border-t border-slate-100 pb-safe z-30">
+    <nav class="fixed bottom-0 w-full bg-white/95 backdrop-blur-md border-t border-slate-100 pb-safe z-30">
         <div class="max-w-md mx-auto flex justify-around items-center h-16">
             <a href="index.html" class="flex flex-col items-center justify-center w-full h-full text-blue-600">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 <span class="text-[10px] font-semibold mt-1">Home</span>
             </a>
             <a href="vocab.html" class="flex flex-col items-center justify-center w-full h-full text-slate-400 hover:text-slate-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                <span class="text-[10px] font-semibold mt-1">Vocab Bank</span>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                <span class="text-[10px] font-semibold mt-1">Vocab</span>
             </a>
         </div>
     </nav>
 
-    <script>
+    <script src="app.js"></script> <script>
+        // --- PAGE SPECIFIC UI LOGIC ---
+        
         const container = document.getElementById('examContainer');
         const searchInput = document.getElementById('searchInput');
-        let loadedExams = [];
+        const countBadge = document.getElementById('countBadge');
+        let allExamsCache = [];
 
-        // 1. Loading Skeleton Function
-        function showSkeletons() {
+        // 1. Render Skeleton Loader
+        function renderSkeletons() {
             let html = '';
             for(let i=0; i<4; i++) {
                 html += `
-                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-                    <div class="h-4 w-2/3 bg-slate-100 rounded mb-2 skeleton"></div>
-                    <div class="h-3 w-1/3 bg-slate-100 rounded mb-4 skeleton"></div>
-                    <div class="h-10 w-full bg-slate-100 rounded-xl skeleton"></div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm mb-3">
+                    <div class="h-5 w-3/4 bg-slate-100 rounded mb-2 skeleton"></div>
+                    <div class="h-4 w-1/2 bg-slate-100 rounded skeleton"></div>
                 </div>`;
             }
             container.innerHTML = html;
         }
 
-        // 2. Fetch and Display Exams
-        async function initHome() {
-            showSkeletons();
-            
-            try {
-                // Fetch the List of Files from exam_index.json
-                const response = await fetch('data/exam_index.json');
-                const filePaths = await response.json();
-                
-                // Fetch each exam file to get its "Info" (Title, Date, etc.)
-                // We use Promise.all to fetch them all at the same time (Fast)
-                const promises = filePaths.map(path => fetch(path).then(res => res.json()));
-                const allData = await Promise.all(promises);
-                
-                // Extract just the info and the file path
-                loadedExams = allData.map((data, index) => ({
-                    ...data.info,
-                    filePath: filePaths[index] // Keep track of which file this is
-                }));
-
-                renderExams(loadedExams);
-
-            } catch (error) {
-                console.error(error);
-                container.innerHTML = `<div class="text-center py-10 text-red-500 text-sm">Failed to load exams.<br>Check console for details.</div>`;
-            }
-        }
-
-        // 3. Render Cards HTML
-        function renderExams(exams) {
+        // 2. Render Actual Cards
+        function renderCards(exams) {
             container.innerHTML = '';
-            
+            countBadge.innerText = `${exams.length} Exams`;
+
             if(exams.length === 0) {
-                container.innerHTML = `<div class="text-center py-8 text-slate-400">No exams found matching your search.</div>`;
+                container.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">No matches found.</div>`;
                 return;
             }
 
             exams.forEach(exam => {
+                // Determine color based on category
+                let badgeColor = 'bg-blue-100 text-blue-600';
+                if(exam.category === 'BCS') badgeColor = 'bg-emerald-100 text-emerald-600';
+                if(exam.category === 'Bank') badgeColor = 'bg-purple-100 text-purple-600';
+
                 const card = `
-                <div onclick="openExam('${exam.filePath}')" class="exam-card bg-white p-5 rounded-2xl shadow-sm border border-slate-100 hover:border-blue-200 cursor-pointer relative overflow-hidden">
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl ${getCategoryColor(exam.category)} flex items-center justify-center text-white shadow-sm">
-                                <span class="font-bold text-xs uppercase">${exam.category.substring(0,2)}</span>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-slate-800 leading-tight pr-4">${exam.title}</h3>
-                                <p class="text-xs text-slate-400 mt-1 flex items-center gap-1">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    ${exam.date}
-                                </p>
-                            </div>
+                <div onclick="startExamSession('${exam.filePath}', '${exam.title}')" class="exam-card bg-white p-5 rounded-2xl shadow-sm border border-slate-100 cursor-pointer relative overflow-hidden group">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${badgeColor} mb-2 inline-block">
+                                ${exam.category}
+                            </span>
+                            <h3 class="font-bold text-slate-800 text-sm leading-snug pr-2">${exam.title}</h3>
+                        </div>
+                        <div class="bg-slate-50 p-2 rounded-full group-hover:bg-blue-50 transition-colors">
+                             <svg class="w-4 h-4 text-slate-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </div>
                     </div>
-                    
-                    <div class="flex items-center justify-between border-t border-slate-50 pt-3 mt-1">
-                        <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded-md">
-                            ${exam.total_questions || '?'} Questions
+                    <div class="mt-3 flex items-center gap-4 text-xs text-slate-400 font-medium border-t border-slate-50 pt-3">
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            ${exam.date}
                         </span>
-                        <span class="text-xs font-bold text-blue-600 flex items-center group">
-                            Practice Now 
-                            <svg class="w-3 h-3 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                        </span>
+                        <span>${exam.total_questions || '?'} Vocabs</span>
                     </div>
                 </div>
                 `;
@@ -159,33 +134,30 @@
             });
         }
 
-        // Helper: Category Colors
-        function getCategoryColor(cat) {
-            if(cat === 'BCS') return 'bg-emerald-500';
-            if(cat === 'Bank') return 'bg-indigo-500';
-            return 'bg-blue-500';
+        // 3. Initialize
+        async function init() {
+            renderSkeletons();
+            
+            // Call function from app.js
+            allExamsCache = await loadHomeData('examContainer');
+            
+            if(allExamsCache) {
+                renderCards(allExamsCache);
+            }
         }
 
-        // 4. Click Handler: Save selection and go to Practice
-        window.openExam = (path) => {
-            // Save the file path to LocalStorage so app.js knows what to fetch
-            localStorage.setItem('selectedExamFile', path);
-            localStorage.setItem('appMode', 'single_exam');
-            window.location.href = 'practice.html'; // Or whatever your quiz page is named
-        };
-
-        // 5. Search Logic
+        // 4. Search Filter
         searchInput.addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
-            const filtered = loadedExams.filter(ex => 
+            const filtered = allExamsCache.filter(ex => 
                 ex.title.toLowerCase().includes(term) || 
                 ex.category.toLowerCase().includes(term)
             );
-            renderExams(filtered);
+            renderCards(filtered);
         });
 
-        // Initialize on load
-        initHome();
+        // Run Logic
+        init();
     </script>
 </body>
 </html>
