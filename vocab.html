@@ -1,0 +1,36 @@
+// On vocab.html load
+window.addEventListener('DOMContentLoaded', async () => {
+    
+    // Show Loading Spinner
+    document.getElementById('loader').style.display = 'block';
+
+    // Fetch and Merge Data
+    const fullBank = await loadVocabBank();
+
+    // Hide Loader
+    document.getElementById('loader').style.display = 'none';
+
+    // Render the giant list
+    renderVocabTable(fullBank); 
+});
+
+function renderVocabTable(questions) {
+    const container = document.getElementById('vocabContainer');
+    let html = '';
+
+    questions.forEach(q => {
+        html += `
+        <div class="vocab-card bg-white p-4 mb-3 rounded-lg shadow-sm border border-gray-100">
+            <div class="flex justify-between">
+                <h3 class="font-bold text-lg text-blue-700">${q.word}</h3>
+                <span class="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded">
+                    ${q.source_exam}
+                </span>
+            </div>
+            <p class="text-gray-600 font-bengali mt-1">${q.meaning_bn}</p>
+        </div>
+        `;
+    });
+
+    container.innerHTML = html;
+}
