@@ -1,26 +1,28 @@
-/* --- FONTS --- */
+/* --- 1. FONTS --- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600&display=swap');
 
 :root {
     --primary: #2563EB; /* Royal Blue */
     --surface: #F8FAFC; /* Off-white background */
+    --text-main: #1E293B;
+    --text-muted: #64748B;
 }
 
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--surface);
-    color: #1E293B;
-    -webkit-tap-highlight-color: transparent;
+    color: var(--text-main);
+    -webkit-tap-highlight-color: transparent; /* Removes blue highlight on mobile tap */
 }
 
-/* Specific class for Bengali Text */
+/* Class for Bengali Text */
 .bn-font {
     font-family: 'Hind Siliguri', sans-serif;
 }
 
-/* --- PREMIUM UI UTILITIES --- */
+/* --- 2. UTILITIES --- */
 
-/* Hide Scrollbar but keep functionality (for horizontal lists) */
+/* Hide Scrollbar (Cleaner UI) */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
@@ -29,7 +31,14 @@ body {
     scrollbar-width: none;
 }
 
-/* Skeleton Loading Animation (Shimmer Effect) */
+/* Safe Area for iPhones (Bottom Nav) */
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* --- 3. ANIMATIONS --- */
+
+/* Skeleton Loading Shimmer */
 @keyframes shimmer {
     0% { background-position: -1000px 0; }
     100% { background-position: 1000px 0; }
@@ -41,15 +50,10 @@ body {
     background-size: 1000px 100%;
 }
 
-/* Card Hover Lift Effect */
+/* Card Hover Effect */
 .exam-card {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .exam-card:active {
     transform: scale(0.98);
-}
-
-/* Bottom Navigation Safety Padding for iPhones */
-.pb-safe {
-    padding-bottom: env(safe-area-inset-bottom);
 }
