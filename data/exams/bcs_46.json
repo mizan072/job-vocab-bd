@@ -1,0 +1,24 @@
+{
+  "exam_info": {
+    "title": "46th BCS Preliminary",
+    "date": "2024-04-26"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "word": "Benevolent",
+      "meaning_bn": "হিতৈষী / দয়ালু",
+      "options": ["Cruel", "Kind", "Angry", "Lazy"],
+      "correct_answer": "Kind",
+      "explanation": "Benevolent means well meaning and kindly."
+    },
+    {
+      "id": 2,
+      "word": "Obscure",
+      "meaning_bn": "অস্পষ্ট",
+      "options": ["Clear", "Vague", "Bright", "Famous"],
+      "correct_answer": "Vague",
+      "explanation": "Obscure means not discovered or known about; uncertain."
+    }
+  ]
+}
